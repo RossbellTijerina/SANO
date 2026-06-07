@@ -1,0 +1,86 @@
+<div class="app-layout" [class.sidebar-collapsed]="sidebarCollapsed" [class.mobile-open]="!sidebarCollapsed">
+  
+  <!-- Mobile Header -->
+  <div class="mobile-header d-md-none">
+    <div class="d-flex align-items-center">
+      <img src="assets/logo.png" alt="Logo Quintana Roo" class="mobile-logo me-2">
+      <h5 class="mb-0 fw-bold" style="color: var(--text-primary);">SANO</h5>
+    </div>
+    <button class="mobile-toggle" (click)="toggleSidebar()">
+      <i class="bi bi-list"></i>
+    </button>
+  </div>
+
+  <!-- Mobile Overlay -->
+  <div class="sidebar-overlay d-md-none" [class.show]="!sidebarCollapsed" (click)="toggleSidebar()"></div>
+
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <div class="sidebar-header">
+      <div class="sidebar-logo" *ngIf="!sidebarCollapsed">
+        <img src="assets/logo.png" alt="Logo Quintana Roo" class="sidebar-img-logo">
+      </div>
+      <div class="sidebar-logo-mini" *ngIf="sidebarCollapsed">
+        <img src="assets/logo.png" alt="Logo Quintana Roo" class="sidebar-img-logo-mini">
+      </div>
+      <button class="sidebar-toggle" (click)="toggleSidebar()" id="btn-toggle-sidebar">
+        <i class="bi" [ngClass]="sidebarCollapsed ? 'bi-chevron-right' : 'bi-chevron-left'"></i>
+      </button>
+    </div>
+
+    <nav class="sidebar-nav">
+      <ng-container *ngFor="let item of menuItems">
+        <a *ngIf="isVisible(item)"
+           [routerLink]="item.route"
+           routerLinkActive="active"
+           class="nav-item"
+           [title]="item.label">
+          <i class="bi" [ngClass]="item.icon"></i>
+          <span *ngIf="!sidebarCollapsed" class="nav-label">{{ item.label }}</span>
+        </a>
+      </ng-container>
+    </nav>
+
+    <div class="sidebar-footer">
+      <div class="user-info" *ngIf="!sidebarCollapsed">
+        <ng-container *ngIf="currentUser$ | async as user">
+          <div class="user-avatar">
+            <i class="bi bi-person-circle"></i>
+          </div>
+          <div class="user-details">
+            <span class="user-name">{{ user.nombre_completo }}</span>
+            <span class="user-role" [ngClass]="user.rol === 'Administrador' ? 'badge-admin' : 'badge-capturista'">
+              {{ user.rol }}
+            </span>
+          </div>
+        </ng-container>
+      </div>
+
+      <!-- Backup button (Admin only) -->
+      <a *ngIf="authService.isAdmin() && !sidebarCollapsed"
+         class="nav-item backup-btn" title="Respaldo de BD"
+         routerLink="/reportes" fragment="backup">
+        <i class="bi bi-cloud-arrow-up"></i>
+        <span class="nav-label">Respaldo BD</span>
+      </a>
+
+      <!-- Theme Toggle -->
+      <button class="nav-item theme-btn" (click)="themeService.toggleDarkMode()" [title]="(themeService.isDarkMode$ | async) ? 'Modo Claro' : 'Modo Oscuro'">
+        <i class="bi" [ngClass]="(themeService.isDarkMode$ | async) ? 'bi-sun-fill' : 'bi-moon-stars-fill'"></i>
+        <span *ngIf="!sidebarCollapsed" class="nav-label">
+          {{ (themeService.isDarkMode$ | async) ? 'Modo Claro' : 'Modo Oscuro' }}
+        </span>
+      </button>
+
+      <button class="nav-item logout-btn" (click)="logout()" title="Cerrar Sesión" id="btn-logout">
+        <i class="bi bi-box-arrow-left"></i>
+        <span *ngIf="!sidebarCollapsed" class="nav-label">Cerrar Sesión</span>
+      </button>
+    </div>
+  </aside>
+
+  <!-- Main Content -->
+  <main class="main-content">
+    <router-outlet></router-outlet>
+  </main>
+</div>

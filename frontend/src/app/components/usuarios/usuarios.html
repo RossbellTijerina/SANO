@@ -1,0 +1,123 @@
+<div class="usuarios animate-fade-in-up">
+  <div class="page-header d-flex justify-content-between align-items-center flex-wrap gap-2">
+    <div>
+      <h2><i class="bi bi-person-gear me-2 text-accent"></i>Gestión de Usuarios</h2>
+      <p>Administración de usuarios y roles del sistema</p>
+    </div>
+    <button class="btn-sano" (click)="abrirFormulario()" id="btn-nuevo-usuario">
+      <i class="bi bi-person-plus"></i> Nuevo Usuario
+    </button>
+  </div>
+
+  <!-- Mensaje -->
+  <div *ngIf="mensaje" class="mb-3 animate-fade-in"
+       [style.background]="mensajeTipo === 'success' ? 'rgba(0,200,83,0.1)' : 'rgba(255,23,68,0.1)'"
+       [style.border]="'1px solid ' + (mensajeTipo === 'success' ? 'rgba(0,200,83,0.3)' : 'rgba(255,23,68,0.3)')"
+       [style.color]="mensajeTipo === 'success' ? '#69f0ae' : '#ff6e80'"
+       style="border-radius:8px;padding:0.75rem 1rem;display:flex;align-items:center;gap:0.5rem">
+    <i class="bi" [ngClass]="mensajeTipo === 'success' ? 'bi-check-circle-fill' : 'bi-exclamation-triangle-fill'"></i>
+    {{ mensaje }}
+    <button style="margin-left:auto;background:none;border:none;color:inherit;cursor:pointer" (click)="mensaje=''">
+      <i class="bi bi-x-lg"></i>
+    </button>
+  </div>
+
+  <div *ngIf="loading" class="text-center py-5"><span class="spinner-border text-info"></span></div>
+
+  <!-- Tabla -->
+  <div *ngIf="!loading" class="card-sano">
+    <div class="table-responsive">
+      <table class="table table-sano mb-0">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Usuario</th>
+            <th>Nombre Completo</th>
+            <th>Rol</th>
+            <th>Estado</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let u of usuarios">
+            <td>{{ u.id }}</td>
+            <td><strong>{{ u.username }}</strong></td>
+            <td>{{ u.nombre_completo }}</td>
+            <td>
+              <span [ngClass]="u.rol === 'Administrador' ? 'badge-admin' : 'badge-capturista'">
+                {{ u.rol }}
+              </span>
+            </td>
+            <td>
+              <span [ngClass]="u.activo ? 'badge-activo' : 'badge-cancelado'">
+                {{ u.activo ? 'Activo' : 'Inactivo' }}
+              </span>
+            </td>
+            <td>
+              <div class="d-flex gap-1">
+                <button class="btn btn-sm btn-sano-outline" (click)="abrirFormulario(u)" title="Editar">
+                  <i class="bi bi-pencil"></i>
+                </button>
+                <button *ngIf="u.activo && u.username !== 'admin'" class="btn btn-sm btn-sano-danger" (click)="confirmarEliminar(u)" title="Desactivar">
+                  <i class="bi bi-trash"></i>
+                </button>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Modal Formulario -->
+  <div *ngIf="showForm" class="modal-overlay animate-fade-in" (click)="cerrarFormulario()">
+    <div class="modal-box animate-fade-in-up" (click)="$event.stopPropagation()">
+      <div class="modal-box-header">
+        <h5><i class="bi bi-person-badge me-2 text-accent"></i>{{ editandoId ? 'Editar' : 'Nuevo' }} Usuario</h5>
+        <button class="btn-close" (click)="cerrarFormulario()"></button>
+      </div>
+      <div class="modal-box-body">
+        <div class="mb-3" *ngIf="!editandoId">
+          <label class="form-label">Username <span style="color:var(--danger)">*</span></label>
+          <input type="text" class="form-control" [(ngModel)]="username" placeholder="nombre.usuario">
+        </div>
+        <div class="mb-3">
+          <label class="form-label">{{ editandoId ? 'Nueva Contraseña (dejar vacío para no cambiar)' : 'Contraseña *' }}</label>
+          <input type="password" class="form-control" [(ngModel)]="password" placeholder="••••••••">
+        </div>
+        <div class="mb-3">
+          <label class="form-label">Nombre Completo <span style="color:var(--danger)">*</span></label>
+          <input type="text" class="form-control" [(ngModel)]="nombreCompleto" placeholder="Nombre completo del usuario">
+        </div>
+        <div class="mb-3">
+          <label class="form-label">Rol</label>
+          <select class="form-select" [(ngModel)]="rol">
+            <option value="Administrador">Administrador</option>
+            <option value="Capturista">Capturista</option>
+          </select>
+        </div>
+      </div>
+      <div class="modal-box-footer">
+        <button class="btn-sano-outline" (click)="cerrarFormulario()">Cancelar</button>
+        <button class="btn-sano" (click)="guardar()"><i class="bi bi-check-lg"></i> Guardar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Confirmar -->
+  <div *ngIf="eliminando" class="modal-overlay animate-fade-in" (click)="eliminando=null">
+    <div class="modal-box animate-fade-in-up" (click)="$event.stopPropagation()">
+      <div class="modal-box-header">
+        <h5><i class="bi bi-exclamation-triangle me-2" style="color:var(--warning)"></i>Confirmar</h5>
+        <button class="btn-close" (click)="eliminando=null"></button>
+      </div>
+      <div class="modal-box-body">
+        <p style="color:var(--text-secondary)">¿Desactivar al usuario <strong>{{ eliminando.nombre_completo }}</strong> ({{ eliminando.username }})?</p>
+      </div>
+      <div class="modal-box-footer">
+        <button class="btn-sano-outline" (click)="eliminando=null">No</button>
+        <button class="btn-sano-danger" (click)="eliminar()"><i class="bi bi-trash"></i> Sí, desactivar</button>
+      </div>
+    </div>
+  </div>
+</div>

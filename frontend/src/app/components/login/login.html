@@ -1,0 +1,50 @@
+<div class="login-container" style="align-items: flex-start; padding-top: 5vh; min-height: 100vh; overflow-y: auto;">
+  <!-- Elegant Background Image -->
+  <div class="login-bg-image"></div>
+  
+  <div class="login-card animate-fade-in-up" style="margin: auto; padding: 2rem; max-width: 400px; width: 100%;">
+    <div class="login-header" style="margin-bottom: 1rem;">
+      <div class="login-logo-container" style="margin-bottom: 0.5rem;">
+        <img src="assets/logo.png" alt="Logo Quintana Roo" class="login-img-logo" style="max-width: 100px; height: auto;">
+      </div>
+      <h1 style="font-size: 1.5rem; margin-bottom: 0;">SANO</h1>
+      <p style="font-size: 0.85rem; margin-bottom: 0;">Sistema de Asignación de Números de Oficio</p>
+      <span class="login-subtitle" style="font-size: 0.7rem;">Delegación Cancún · Registro Público de la Propiedad</span>
+    </div>
+
+    <form (ngSubmit)="onSubmit()" class="login-form">
+      <div class="mb-2">
+        <label class="form-label" style="font-size: 0.8rem; margin-bottom: 0.2rem;">
+          <i class="bi bi-person-fill me-1"></i> Usuario
+        </label>
+        <input type="text" class="form-control" [(ngModel)]="username" name="username"
+               placeholder="Ingrese su usuario" autocomplete="username" id="input-username" style="height: 40px; font-size: 0.9rem;">
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label" style="font-size: 0.8rem; margin-bottom: 0.2rem;">
+          <i class="bi bi-lock-fill me-1"></i> Contraseña
+        </label>
+        <input type="password" class="form-control" [(ngModel)]="password" name="password"
+               placeholder="Ingrese su contraseña" autocomplete="current-password" id="input-password" style="height: 40px; font-size: 0.9rem;">
+      </div>
+
+      <div *ngIf="error" class="alert-error animate-fade-in">
+        <i class="bi bi-exclamation-triangle-fill"></i> {{ error }}
+      </div>
+
+      <button type="submit" class="btn-login" [disabled]="loading" id="btn-login" style="height: 44px; margin-top: 0.5rem;">
+        <span *ngIf="!loading">
+          <i class="bi bi-box-arrow-in-right me-2"></i> Iniciar Sesión
+        </span>
+        <span *ngIf="loading">
+          <span class="spinner-border spinner-border-sm me-2"></span> Autenticando...
+        </span>
+      </button>
+    </form>
+
+    <div class="login-footer" style="margin-top: 1rem; font-size: 0.7rem;">
+      <i class="bi bi-shield-lock-fill me-1"></i> Acceso seguro con JWT
+    </div>
+  </div>
+</div>

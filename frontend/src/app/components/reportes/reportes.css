@@ -1,0 +1,52 @@
+.reportes { max-width: 1200px; margin: 0 auto; }
+
+.export-btn {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem 1.5rem;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-color);
+  background: var(--bg-input);
+  color: var(--text-primary);
+  cursor: pointer;
+  transition: var(--transition);
+  text-align: left;
+  flex: 1;
+  min-width: 200px;
+}
+.export-btn:hover:not(:disabled) {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-md);
+}
+.export-btn:disabled { opacity: 0.6; cursor: not-allowed; }
+.export-btn strong { display: block; font-size: 0.95rem; }
+.export-btn small { color: var(--text-muted); font-size: 0.75rem; }
+.export-icon {
+  width: 48px; height: 48px;
+  border-radius: var(--radius-sm);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.5rem;
+}
+.export-btn.pdf .export-icon { background: rgba(255, 23, 68, 0.15); color: #ff1744; }
+.export-btn.pdf:hover { border-color: #ff1744; }
+.export-btn.excel .export-icon { background: rgba(0, 200, 83, 0.15); color: #00c853; }
+.export-btn.excel:hover { border-color: #00c853; }
+
+.backup-item {
+  padding: 0.6rem 0;
+  border-bottom: 1px solid var(--border-color);
+}
+.backup-item:last-child { border-bottom: none; }
+
+.info-list {
+  list-style: none; padding: 0; margin: 0;
+}
+.info-list li {
+  color: var(--text-secondary); font-size: 0.85rem;
+  padding: 0.35rem 0 0.35rem 1.2rem; position: relative;
+}
+.info-list li::before {
+  content: '›'; position: absolute; left: 0;
+  color: var(--accent); font-weight: bold;
+}

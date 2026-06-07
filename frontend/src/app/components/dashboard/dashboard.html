@@ -1,0 +1,134 @@
+<div class="dashboard animate-fade-in-up">
+  <!-- Header -->
+  <div class="page-header d-flex justify-content-between align-items-center flex-wrap gap-2">
+    <div>
+      <h2><i class="bi bi-speedometer2 me-2 text-accent"></i>Dashboard</h2>
+      <p>Panel de indicadores del Sistema SANO</p>
+    </div>
+    <div class="d-flex align-items-center gap-2">
+      <label class="form-label mb-0 me-1" style="white-space:nowrap">Año fiscal:</label>
+      <select class="form-select" style="width:120px" [(ngModel)]="anioSeleccionado" (ngModelChange)="onAnioChange()" id="select-anio">
+        <option *ngFor="let a of stats?.anios_disponibles || [anioSeleccionado]" [value]="a">{{ a }}</option>
+      </select>
+  </div>
+
+  <!-- Loading -->
+  <div *ngIf="loading" class="text-center py-5">
+    <span class="spinner-border text-info"></span>
+    <p class="mt-2 text-muted-sano">Cargando estadísticas...</p>
+  </div>
+
+  <ng-container *ngIf="!loading && stats">
+    <!-- Stat Cards -->
+    <div class="row g-3 mb-4">
+      <div class="col-xl-3 col-md-6 col-12">
+        <div class="stat-card primary">
+          <div class="d-flex justify-content-between align-items-center">
+            <div>
+              <div class="stat-label text-uppercase fw-bold" style="letter-spacing: 0.5px; font-size: 0.75rem;">Total Oficios</div>
+              <div class="stat-value">{{ stats.totales.total }}</div>
+            </div>
+            <div class="stat-icon primary"><i class="bi bi-file-earmark-text"></i></div>
+          </div>
+        </div>
+      </div>
+      <div class="col-xl-3 col-md-6 col-12">
+        <div class="stat-card accent">
+          <div class="d-flex justify-content-between align-items-center">
+            <div>
+              <div class="stat-label text-uppercase fw-bold" style="letter-spacing: 0.5px; font-size: 0.75rem;">Hoy</div>
+              <div class="stat-value">{{ stats.totales.hoy }}</div>
+            </div>
+            <div class="stat-icon accent"><i class="bi bi-calendar-check"></i></div>
+          </div>
+        </div>
+      </div>
+      <div class="col-xl-3 col-md-6 col-12">
+        <div class="stat-card success">
+          <div class="d-flex justify-content-between align-items-center">
+            <div>
+              <div class="stat-label text-uppercase fw-bold" style="letter-spacing: 0.5px; font-size: 0.75rem;">Activos</div>
+              <div class="stat-value">{{ stats.totales.activos }}</div>
+            </div>
+            <div class="stat-icon success"><i class="bi bi-check-circle"></i></div>
+          </div>
+        </div>
+      </div>
+      <div class="col-xl-3 col-md-6 col-12">
+        <div class="stat-card danger">
+          <div class="d-flex justify-content-between align-items-center">
+            <div>
+              <div class="stat-label text-uppercase fw-bold" style="letter-spacing: 0.5px; font-size: 0.75rem;">Cancelados</div>
+              <div class="stat-value">{{ stats.totales.cancelados }}</div>
+            </div>
+            <div class="stat-icon danger"><i class="bi bi-x-circle"></i></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Charts Row -->
+    <div class="row g-3 mb-4">
+      <div class="col-lg-7">
+        <div class="card-sano p-4">
+          <h6 class="mb-3 fw-bold"><i class="bi bi-bar-chart me-2 text-accent"></i>Oficios por Mes — {{ anioSeleccionado }}</h6>
+          <div class="chart-container">
+            <canvas #chartBar></canvas>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-5">
+        <div class="card-sano p-4">
+          <h6 class="mb-3 fw-bold"><i class="bi bi-pie-chart me-2 text-accent"></i>Estado de Oficios</h6>
+          <div class="chart-container-sm">
+            <canvas #chartDona></canvas>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Últimos oficios -->
+    <div class="card-sano p-3">
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <h6 class="mb-0"><i class="bi bi-clock-history me-2 text-accent"></i>Últimos Oficios Registrados</h6>
+        <a routerLink="/buscar" class="btn-sano-outline btn-sm" style="font-size:0.8rem;padding:0.35rem 1rem">
+          <i class="bi bi-search"></i> Ver todos
+        </a>
+      </div>
+      <div class="table-responsive">
+        <table class="table table-sano mb-0">
+          <thead>
+            <tr>
+              <th>Folio</th>
+              <th>Expediente</th>
+              <th>Solicitante</th>
+              <th>Asunto</th>
+              <th>Fecha</th>
+              <th>Estado</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let o of stats.ultimos_oficios" class="animate-fade-in">
+              <td><strong>{{ o.anio }}-{{ o.folio }}</strong></td>
+              <td>{{ o.expediente || '—' }}</td>
+              <td>{{ o.solicitante | slice:0:20 }}{{ o.solicitante.length > 20 ? '...' : '' }}</td>
+              <td>{{ o.asunto | slice:0:25 }}{{ o.asunto && o.asunto.length > 25 ? '...' : '' }}</td>
+              <td>{{ o.fecha }}</td>
+              <td>
+                <span [ngClass]="o.estado === 'ACTIVO' ? 'badge-activo' : 'badge-cancelado'">
+                  {{ o.estado }}
+                </span>
+              </td>
+            </tr>
+            <tr *ngIf="stats.ultimos_oficios.length === 0">
+              <td colspan="6" class="text-center text-muted-sano py-4">
+                <i class="bi bi-inbox" style="font-size:2rem"></i><br>
+                No hay oficios registrados para {{ anioSeleccionado }}
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </ng-container>
+</div>

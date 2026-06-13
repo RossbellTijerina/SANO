@@ -68,4 +68,6 @@ export interface Estadisticas {
   ultimos_oficios: Oficio[];
   anios_disponibles: number[];
   anio_actual: number;
+  top_funcionarios: { nombre: string; cargo: string; total_oficios: number }[];
+  actividad_reciente: { accion: string; tabla: string; detalles: string; fecha: string; usuario: string }[];
 }

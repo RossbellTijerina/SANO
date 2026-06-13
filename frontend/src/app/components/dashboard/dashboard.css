@@ -1,3 +1,254 @@
 .dashboard { max-width: 1400px; margin: 0 auto; }
 .chart-container { height: 300px; position: relative; }
 .chart-container-sm { height: 300px; position: relative; }
+
+/* ============================================
+   Ranking de Funcionarios
+   ============================================ */
+.ranking-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.65rem 0.5rem;
+  border-radius: var(--radius-sm);
+  transition: var(--transition);
+  animation: fadeInUp 0.4s ease-out both;
+}
+.ranking-item:hover {
+  background: var(--bg-card-hover);
+}
+.ranking-item + .ranking-item {
+  border-top: 1px solid var(--border-color);
+}
+
+.ranking-position {
+  flex-shrink: 0;
+  width: 30px;
+  text-align: center;
+}
+.ranking-number {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  font-weight: 700;
+  font-size: 0.75rem;
+  background: var(--bg-card-hover);
+  color: var(--text-secondary);
+  border: 1px solid var(--border-color);
+}
+.ranking-number.gold {
+  background: linear-gradient(135deg, #d4af37, #f5d060);
+  color: #5c3d00;
+  border-color: #d4af37;
+  box-shadow: 0 2px 8px rgba(212, 175, 55, 0.35);
+}
+.ranking-number.silver {
+  background: linear-gradient(135deg, #b0b8c4, #d1d5db);
+  color: #374151;
+  border-color: #9ca3af;
+  box-shadow: 0 2px 6px rgba(156, 163, 175, 0.3);
+}
+.ranking-number.bronze {
+  background: linear-gradient(135deg, #cd7f32, #e8a860);
+  color: #5c2d00;
+  border-color: #cd7f32;
+  box-shadow: 0 2px 6px rgba(205, 127, 50, 0.3);
+}
+
+.ranking-info {
+  flex: 0 0 auto;
+  min-width: 0;
+  width: 120px;
+}
+.ranking-name {
+  font-weight: 600;
+  font-size: 0.85rem;
+  color: var(--text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.ranking-cargo {
+  font-size: 0.7rem;
+  color: var(--text-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.ranking-bar-wrapper {
+  flex: 1;
+  height: 8px;
+  background: var(--bg-card-hover);
+  border-radius: 4px;
+  overflow: hidden;
+  min-width: 40px;
+}
+.ranking-bar {
+  height: 100%;
+  background: var(--gradient-primary);
+  border-radius: 4px;
+  transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+  min-width: 4px;
+}
+
+.ranking-count {
+  flex-shrink: 0;
+  text-align: right;
+  min-width: 48px;
+}
+.ranking-count strong {
+  display: block;
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--primary-light);
+  line-height: 1.1;
+}
+.ranking-count small {
+  font-size: 0.65rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+
+/* ============================================
+   Actividad Reciente (Timeline)
+   ============================================ */
+.activity-timeline {
+  max-height: 360px;
+  overflow-y: auto;
+  padding-right: 0.25rem;
+}
+.activity-timeline::-webkit-scrollbar { width: 4px; }
+.activity-timeline::-webkit-scrollbar-thumb {
+  background: var(--accent);
+  border-radius: 2px;
+}
+
+.activity-item {
+  display: flex;
+  gap: 0.75rem;
+  padding-bottom: 0.5rem;
+  animation: fadeInUp 0.35s ease-out both;
+}
+
+.activity-icon-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex-shrink: 0;
+  width: 32px;
+}
+.activity-icon {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.85rem;
+  flex-shrink: 0;
+  transition: var(--transition);
+}
+.activity-icon.icon-crear {
+  background: rgba(46, 125, 50, 0.12);
+  color: var(--success);
+}
+.activity-icon.icon-editar {
+  background: rgba(2, 119, 189, 0.12);
+  color: var(--info);
+}
+.activity-icon.icon-cancelar {
+  background: rgba(198, 40, 40, 0.12);
+  color: var(--danger);
+}
+.activity-icon.icon-login {
+  background: rgba(188, 149, 92, 0.15);
+  color: var(--accent);
+}
+.activity-icon.icon-exportar {
+  background: rgba(105, 28, 50, 0.1);
+  color: var(--primary-light);
+}
+.activity-icon.icon-default {
+  background: var(--bg-card-hover);
+  color: var(--text-muted);
+}
+
+.activity-line {
+  width: 2px;
+  flex: 1;
+  min-height: 12px;
+  background: var(--border-color);
+  margin: 4px 0;
+}
+
+.activity-content {
+  flex: 1;
+  min-width: 0;
+  padding-bottom: 0.65rem;
+  border-bottom: 1px solid var(--border-color);
+}
+.activity-item:last-child .activity-content {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.activity-header {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  margin-bottom: 0.2rem;
+}
+
+.activity-action-badge {
+  display: inline-block;
+  padding: 0.15rem 0.55rem;
+  border-radius: 12px;
+  font-size: 0.65rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+.activity-action-badge.badge-crear {
+  background: rgba(46, 125, 50, 0.12);
+  color: var(--success);
+}
+.activity-action-badge.badge-editar {
+  background: rgba(2, 119, 189, 0.12);
+  color: var(--info);
+}
+.activity-action-badge.badge-cancelar {
+  background: rgba(198, 40, 40, 0.12);
+  color: var(--danger);
+}
+.activity-action-badge.badge-login {
+  background: rgba(188, 149, 92, 0.15);
+  color: var(--accent);
+}
+.activity-action-badge.badge-exportar {
+  background: rgba(105, 28, 50, 0.1);
+  color: var(--primary-light);
+}
+
+.activity-user {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  font-weight: 500;
+}
+
+.activity-detail {
+  font-size: 0.8rem;
+  color: var(--text-primary);
+  line-height: 1.4;
+  margin-bottom: 0.15rem;
+}
+
+.activity-time {
+  font-size: 0.7rem;
+  color: var(--text-muted);
+}

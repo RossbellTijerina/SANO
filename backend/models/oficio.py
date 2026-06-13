@@ -315,12 +315,47 @@ class OficioModel:
             cursor.execute("SELECT DISTINCT anio FROM Oficios ORDER BY anio DESC")
             anios = [r.anio for r in cursor.fetchall()]
             
+            # Top 5 funcionarios con más oficios del año
+            cursor.execute("""
+                SELECT TOP 5 f.nombre, f.cargo, COUNT(o.id) AS total_oficios
+                FROM Oficios o
+                INNER JOIN Funcionarios f ON o.funcionario_id = f.id
+                WHERE o.anio = ? AND o.estado = 'ACTIVO'
+                GROUP BY f.nombre, f.cargo
+                ORDER BY total_oficios DESC
+            """, (current_year,))
+            top_funcionarios = [
+                {'nombre': r.nombre, 'cargo': r.cargo, 'total_oficios': r.total_oficios}
+                for r in cursor.fetchall()
+            ]
+            
+            # Últimas 8 acciones de auditoría
+            cursor.execute("""
+                SELECT TOP 8 a.accion, a.tabla_afectada, a.detalles, a.fecha,
+                       u.nombre_completo AS usuario_nombre
+                FROM AuditLog a
+                LEFT JOIN Usuarios u ON a.usuario_id = u.id
+                ORDER BY a.fecha DESC
+            """)
+            actividad_reciente = [
+                {
+                    'accion': r.accion,
+                    'tabla': r.tabla_afectada,
+                    'detalles': r.detalles,
+                    'fecha': str(r.fecha),
+                    'usuario': r.usuario_nombre
+                }
+                for r in cursor.fetchall()
+            ]
+            
             return {
                 'totales': totales,
                 'por_mes': por_mes,
                 'ultimos_oficios': ultimos,
                 'anios_disponibles': anios,
-                'anio_actual': current_year
+                'anio_actual': current_year,
+                'top_funcionarios': top_funcionarios,
+                'actividad_reciente': actividad_reciente
             }
         finally:
             conn.close()

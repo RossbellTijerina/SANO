@@ -67,21 +67,71 @@
       </div>
     </div>
 
-    <!-- Charts Row -->
+    <!-- Charts + Actividad Reciente -->
     <div class="row g-3 mb-4">
-      <div class="col-lg-7">
-        <div class="card-sano p-4">
+      <div class="col-lg-4">
+        <div class="card-sano p-4 h-100">
           <h6 class="mb-3 fw-bold"><i class="bi bi-bar-chart me-2 text-accent"></i>Oficios por Mes — {{ anioSeleccionado }}</h6>
           <div class="chart-container">
             <canvas #chartBar></canvas>
           </div>
         </div>
       </div>
-      <div class="col-lg-5">
-        <div class="card-sano p-4">
+      <div class="col-lg-4">
+        <div class="card-sano p-4 h-100">
           <h6 class="mb-3 fw-bold"><i class="bi bi-pie-chart me-2 text-accent"></i>Estado de Oficios</h6>
           <div class="chart-container-sm">
             <canvas #chartDona></canvas>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-4">
+        <div class="card-sano p-4 h-100">
+          <h6 class="mb-3 fw-bold"><i class="bi bi-activity me-2 text-accent"></i>Actividad Reciente</h6>
+          <div *ngIf="stats.actividad_reciente && stats.actividad_reciente.length > 0" class="activity-timeline">
+            <div *ngFor="let act of stats.actividad_reciente; let i = index" class="activity-item" [style.animation-delay]="(i * 0.06) + 's'">
+              <div class="activity-icon-wrapper">
+                <div class="activity-icon"
+                  [ngClass]="{
+                    'icon-crear': act.accion === 'CREAR',
+                    'icon-editar': act.accion === 'EDITAR',
+                    'icon-cancelar': act.accion === 'CANCELAR',
+                    'icon-login': act.accion === 'LOGIN',
+                    'icon-exportar': act.accion === 'EXPORTAR_PDF' || act.accion === 'EXPORTAR_EXCEL',
+                    'icon-default': act.accion !== 'CREAR' && act.accion !== 'EDITAR' && act.accion !== 'CANCELAR' && act.accion !== 'LOGIN' && act.accion !== 'EXPORTAR_PDF' && act.accion !== 'EXPORTAR_EXCEL'
+                  }">
+                  <i class="bi"
+                    [ngClass]="{
+                      'bi-plus-circle': act.accion === 'CREAR',
+                      'bi-pencil-square': act.accion === 'EDITAR',
+                      'bi-x-octagon': act.accion === 'CANCELAR',
+                      'bi-box-arrow-in-right': act.accion === 'LOGIN',
+                      'bi-file-earmark-arrow-down': act.accion === 'EXPORTAR_PDF' || act.accion === 'EXPORTAR_EXCEL',
+                      'bi-gear': act.accion !== 'CREAR' && act.accion !== 'EDITAR' && act.accion !== 'CANCELAR' && act.accion !== 'LOGIN' && act.accion !== 'EXPORTAR_PDF' && act.accion !== 'EXPORTAR_EXCEL'
+                    }"></i>
+                </div>
+                <div class="activity-line" *ngIf="i < stats.actividad_reciente.length - 1"></div>
+              </div>
+              <div class="activity-content">
+                <div class="activity-header">
+                  <span class="activity-action-badge"
+                    [ngClass]="{
+                      'badge-crear': act.accion === 'CREAR',
+                      'badge-editar': act.accion === 'EDITAR',
+                      'badge-cancelar': act.accion === 'CANCELAR',
+                      'badge-login': act.accion === 'LOGIN',
+                      'badge-exportar': act.accion === 'EXPORTAR_PDF' || act.accion === 'EXPORTAR_EXCEL'
+                    }">{{ act.accion }}</span>
+                  <span class="activity-user"><i class="bi bi-person-fill me-1"></i>{{ act.usuario }}</span>
+                </div>
+                <div class="activity-detail">{{ act.detalles | slice:0:45 }}{{ act.detalles && act.detalles.length > 45 ? '...' : '' }}</div>
+                <div class="activity-time"><i class="bi bi-clock me-1"></i>{{ act.fecha | slice:0:16 }}</div>
+              </div>
+            </div>
+          </div>
+          <div *ngIf="!stats.actividad_reciente || stats.actividad_reciente.length === 0" class="text-center text-muted-sano py-4">
+            <i class="bi bi-journal-text" style="font-size: 2rem"></i><br>
+            Sin actividad reciente registrada
           </div>
         </div>
       </div>
